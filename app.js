@@ -44,8 +44,8 @@ app.use(session(app));
 var bodyParser = require('koa-bodyparser');
 app.use(bodyParser());
 //数据校验
-var validator = require('koa-validator');
-app.use(validator());
+/*var validator = require('koa-validator');
+app.use(validator());*/
 
 //静态文件cache
 var staticCache = require('koa-static-cache');
