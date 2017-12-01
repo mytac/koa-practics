@@ -15,7 +15,6 @@ var config = {
     "logDir": path.join(__dirname,'..', 'log'),
     //静态文件所在的目录
     "staticDir": path.join(__dirname,'..', 'public')
-    
 
 };
 
