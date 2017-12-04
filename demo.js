@@ -1,9 +1,32 @@
+const fs=require('fs')
+const co=require('co')
 const koa=require('koa')
 const router=require('koa-router')
 
 const config=require('./config/config')
 
 const app=koa()
+
+
+function read(file){
+    return (fn)=>{
+            fs.readFile(file,'utf8',(err,res)=>{
+                console.log(res)
+            })
+    }
+}
+
+co(function *(){
+    const res=yield [
+        read('.gitignore'),
+        read('package.json')
+    ]
+    console.log('res',res)
+})()
+
+
+//co.next()
+
 
 app.use(function *(next){
     // 注入config配置信息
