@@ -11,11 +11,30 @@ function co(fn) {
             it = gen.next(res);
             //{value:function(){},done:false}
             if(!it.done){
-                it.value(_next);
+                if(isGeneratorFunction(it.value)){
+                    co(it.value).call(ctx,_next)
+                }else{
+                    it.value(_next);
+                }
+            }else{
+                done&&done.call(ctx)
             }
         }
         _next();
     }
+}
+
+// 判断是否为generator function
+function isGeneratorFunction(obj){
+    const constructor = obj.constructor;
+    if (!constructor) return false;
+    if ('GeneratorFunction' === constructor.name || 'GeneratorFunction' === constructor.displayName) return true;
+    return isGenerator(constructor.prototype);
+}
+
+// 判断是否为generator
+function isGenerator(obj){
+    return 'function' === typeof obj.next && 'function' === typeof obj.throw;
 }
 
 function read(file){
@@ -25,28 +44,18 @@ function read(file){
     }
 }
 
-const gen=function *(){
-    const b=yield read('error.js')
-    console.log(b.length)
-
-    const c=yield read('package.json')
-    console.log(c.length)
+function * gf1() {
+    this.a=yield  read('error.js')
 }
 
-co(gen)()
-
-/*function read(file){
-    fs.readFile(file,'utf8',(err,res)=>{
-        g.next(res)
-    })
+function * gf2() {
+    this.b=yield  read('package.json')
 }
 
-function * gen(){
-    const b=yield read('error.js')
-    console.log('b',b.length)
-    const c=yield read('package.json')
-    console.log('c',c.length)
-}
 
-const g=gen()
-console.log(g.next())*/
+co(function *(){
+    yield gf1
+    yield gf2
+    console.log(this.a.length)
+    console.log(this.b.length)
+})()
