@@ -11,17 +11,15 @@ const app=koa()
 function read(file){
     return (fn)=>{
             fs.readFile(file,'utf8',(err,res)=>{
-                console.log(res)
             })
     }
 }
 
 co(function *(){
-    const res=yield [
-        read('.gitignore'),
-        read('package.json')
-    ]
-    console.log('res',res)
+    const a=yield read('.gitignore')
+    console.log(a.length)
+    const b=yield read('package.json')
+    console.log(b.length)
 })()
 
 
